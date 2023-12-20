@@ -4,18 +4,18 @@ import { useDispatch } from 'react-redux';
 import { deleteContact } from '../../redux/contactSlice';
 
 export const ContactCard = ({
-  contact: { id, name, number },
+  contact: { id, name, phone },
 }) => {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
     dispatch(deleteContact(id));
+    
   };
-
   return (
     <>
       <p>{name}</p>
-      <p>{number}</p>
+      <p>{phone}</p>
       <Btn type="button" onClick={handleDelete}>
         Delete
       </Btn>

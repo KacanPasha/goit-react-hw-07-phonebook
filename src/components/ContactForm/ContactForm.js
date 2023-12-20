@@ -3,8 +3,8 @@ import { Formik, Field } from 'formik';
 import InputMask from 'react-input-mask';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from 'nanoid';
 import { addContact } from '../../redux/contactSlice';
+import { selectContacts} from '../../redux/selectors'
 import {
   BlockLabel,
   BlocForm,
@@ -18,27 +18,27 @@ const schema = Yup.object().shape({
 });
 
 const phoneSchema = Yup.string().matches(
-  /^\+\d{3}\(\d{2}\)\s\d{3}-\d{2}-\d{2}$/,
-  'Invalid phone number format (e.g., +380(99) 999-99-99)'
+  /^\d{3}-\d{3}-\d{4}$/,
+  'Invalid phone phone format (e.g., 999-999-9999)'
 );
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.account);
+  const contacts = useSelector(selectContacts);
   const addContactHandler = (newContact, { resetForm }) => {
-    const { name, number } = newContact;
+    const { name, phone } = newContact;
 
     const contactExists =
       contacts &&
       contacts.some(
-        contact => contact.name === name || contact.number === number
+        contact => contact.name === name || contact.phone === phone
       );
 
     if (contactExists) {
       alert('a contact with the same number or name already exists');
       return;
     } else {
-      dispatch(addContact({ ...newContact, id: nanoid() }));
+      dispatch(addContact({ ...newContact}));
       resetForm();
     }
   };
@@ -47,7 +47,7 @@ export const ContactForm = () => {
     <Formik
       initialValues={{
         name: '',
-        number: '',
+        phone: '',
       }}
       validationSchema={schema}
       onSubmit={addContactHandler}
@@ -61,10 +61,10 @@ export const ContactForm = () => {
           </FieldСontainer>
 
           <FieldСontainer>
-            <BlockLabel>Number</BlockLabel>
+            <BlockLabel>Phone</BlockLabel>
 
             <Field
-              name="number"
+              name="phone"
               validate={value => {
                 try {
                   phoneSchema.validateSync(value);
@@ -76,12 +76,12 @@ export const ContactForm = () => {
               {({ field }) => (
                 <InputMask
                   {...field}
-                  mask="+380(99) 999-99-99"
-                  placeholder="+380(99) 999-99-99"
+                  mask="999-999-9999"
+                  placeholder="999-999-9999"
                 />
               )}
             </Field>
-            <BlockError name="number" component="div" />
+            <BlockError name="phone" component="div" />
           </FieldСontainer>
 
           <Btn type="submit">Add contact</Btn>

@@ -8,7 +8,7 @@ export async function fetchContacts() {
 }
 
 export async function deleteContact(id) {
-  const { data } = await axios.delete('/contacts/:id', id);
+  const { data } = await axios.delete(`/contacts/${id}`);
   return data;
 }
 
@@ -16,4 +16,3 @@ export async function addContact(newContact) {
   const { data } = await axios.post('/contacts', newContact);
   return data;
 }
-
